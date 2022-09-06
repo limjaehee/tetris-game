@@ -1,0 +1,41 @@
+* {
+    font-family: "Press Start 2P", cursive;
+}
+
+body {
+    margin: 0;
+}
+
+.game-bg {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.right-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.right-area h1 {
+    margin: 0 0 30px;
+}
+
+.right-area p {
+    margin-left: 5px;
+}
+
+.game-board {
+    border: solid 2px;
+}
+
+.play-button {
+    background-color: #4caf50;
+    font-size: 16px;
+    padding: 15px 30px;
+    cursor: pointer;
+}
