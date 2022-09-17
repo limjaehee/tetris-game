@@ -10,17 +10,19 @@ class Piece {
         this.spawn();
     }
 
-    spawn() {
-        this.color = "blue";
-        this.shape = [
-            [2, 0, 0],
-            [2, 2, 2],
-            [0, 0, 0],
-        ];
+    randomizeTetrominoType(noOfTypes) {
+        return Math.floor(Math.random() * noOfTypes);
+    }
 
+    spawn() {
+        const typeId = this.randomizeTetrominoType(COLORS.length);
+
+        this.color = COLORS[typeId];
+        this.shape = SHAPES[typeId];
         //Starting position.
         this.x = COLS / 2 - 2;
         this.y = 0;
+        this.hardDropped = false;
     }
 
     draw() {
@@ -38,7 +40,15 @@ class Piece {
         });
     }
 
+    setStartingPosition() {
+        this.x = this.typeId === 4 ? 4 : 3;
+    }
+
     move(p) {
-        (this.x = p.x), (this.y = p.y);
+        if (!this.hardDropped) {
+            this.x = p.x;
+            this.y = p.y;
+        }
+        this.shape = p.shape;
     }
 }

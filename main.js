@@ -1,6 +1,8 @@
 const canvas = document.getElementById("board");
 const rightArea = document.querySelector(".right-area");
 const ctx = canvas.getContext("2d");
+const canvasNext = document.getElementById("next");
+const ctxNext = canvasNext.getContext("2d");
 
 //캔버스의 크기 계산
 ctx.canvas.width = COLS * BLOCK_SIZE;
@@ -10,13 +12,12 @@ rightArea.style.height = ROWS * BLOCK_SIZE + "px";
 //블록의 크기 변경
 ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
 
-let board = new Board();
+let board = new Board(ctx, ctxNext);
 
 function play() {
     board.reset();
     let piece = new Piece(ctx);
     piece.draw();
-
     board.piece = piece;
 }
 
@@ -25,6 +26,7 @@ const moves = {
     [KEY.RIGHT]: (p) => ({ ...p, x: p.x + 1 }),
     [KEY.DOWN]: (p) => ({ ...p, y: p.y + 1 }),
     [KEY.SPACE]: (p) => ({ ...p, y: p.y + 1 }),
+    [KEY.UP]: (p) => board.rotate(p),
 };
 
 document.addEventListener("keydown", (event) => {
