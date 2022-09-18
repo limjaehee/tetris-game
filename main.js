@@ -73,10 +73,13 @@ function animate(now = 0) {
     if (time.elapsed > time.level) {
         time.start = now;
 
-        board.drop();
+        if (!board.drop()) {
+            return;
+        }
     }
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
     board.draw();
     requestId = requestAnimationFrame(animate);
 }
@@ -86,16 +89,22 @@ function resetGame() {
     time = {
         start: 0,
         elapsed: 0,
-        level: 0,
+        level: 1000,
     };
 }
 
 function play() {
     addEventListener();
-    resetGame();
+
+    if (document.querySelector("#play-btn").style.display == "") {
+        resetGame();
+    }
 
     if (requestId) {
         cancelAnimationFrame(requestId);
     }
+
+    document.querySelector("#play-btn").style.display = "none";
+
     animate();
 }
