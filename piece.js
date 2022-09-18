@@ -15,10 +15,10 @@ class Piece {
     }
 
     spawn() {
-        const typeId = this.randomizeTetrominoType(COLORS.length);
+        this.typeId = this.randomizeTetrominoType(COLORS.length - 1);
 
-        this.color = COLORS[typeId];
-        this.shape = SHAPES[typeId];
+        this.color = COLORS[this.typeId];
+        this.shape = SHAPES[this.typeId];
         //Starting position.
         this.x = COLS / 2 - 2;
         this.y = 0;
@@ -38,6 +38,11 @@ class Piece {
                 }
             });
         });
+    }
+
+    animate() {
+        this.piece.draw();
+        requestAnimationFrame(this.animate.bind(this));
     }
 
     setStartingPosition() {

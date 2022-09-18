@@ -26,6 +26,41 @@ class Board {
         this.next.draw();
     }
 
+    draw() {
+        this.piece.draw();
+        this.drawBoard();
+    }
+
+    drop() {
+        let p = moves[KEY.DOWN](this.piece);
+        if (this.vaild(p)) {
+            this.piece.move(p);
+        } else {
+            this.freeze();
+
+            if (this.piece.y === 0) {
+                return false;
+            }
+            this.piece = this.next;
+            this.piece.ctx = this.ctx;
+            this.piece.setStartingPosition();
+            this.getNewPiece();
+        }
+
+        return true;
+    }
+
+    drawBoard() {
+        this.grid.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value > 0) {
+                    this.ctx.fillStyle = COLORS[value];
+                    this.ctx.fillRect(x, y, 1, 1);
+                }
+            });
+        });
+    }
+
     getExptyBoard() {
         return Array.from(
             {
@@ -56,6 +91,16 @@ class Board {
         });
     }
 
+    freeze() {
+        this.piece.shape.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value > 0) {
+                    this.grid[y + this.piece.y][x + this.piece.x] = value;
+                }
+            });
+        });
+    }
+
     rotate(piece) {
         let p = JSON.parse(JSON.stringify(piece));
 
@@ -66,8 +111,6 @@ class Board {
         }
 
         p.shape.forEach((row) => row.reverse());
-
-        console.log(p);
 
         //알고리즘 처리
         return p;

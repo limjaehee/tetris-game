@@ -12,14 +12,8 @@ rightArea.style.height = ROWS * BLOCK_SIZE + "px";
 //블록의 크기 변경
 ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
 
-let board = new Board(ctx, ctxNext);
-
-function play() {
-    board.reset();
-    let piece = new Piece(ctx);
-    piece.draw();
-    board.piece = piece;
-}
+let requestId = null;
+let time = null;
 
 const moves = {
     [KEY.LEFT]: (p) => ({ ...p, x: p.x - 1 }),
@@ -29,7 +23,22 @@ const moves = {
     [KEY.UP]: (p) => board.rotate(p),
 };
 
-document.addEventListener("keydown", (event) => {
+let board = new Board(ctx, ctxNext);
+
+initNext();
+
+function initNext() {
+    ctxNext.canvas.width = 8 * BLOCK_SIZE;
+    ctxNext.canvas.height = 8 * BLOCK_SIZE;
+    ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
+}
+
+function addEventListener() {
+    document.removeEventListener("keydown", handleKeyPress);
+    document.addEventListener("keydown", handleKeyPress);
+}
+
+function handleKeyPress(event) {
     if (moves[event.keyCode]) {
         //이벤트 버블링 막기
         event.preventDefault();
@@ -56,4 +65,37 @@ document.addEventListener("keydown", (event) => {
             board.piece.draw();
         }
     }
-});
+}
+
+function animate(now = 0) {
+    time.elapsed = now - time.start;
+
+    if (time.elapsed > time.level) {
+        time.start = now;
+
+        board.drop();
+    }
+
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    board.draw();
+    requestId = requestAnimationFrame(animate);
+}
+
+function resetGame() {
+    board.reset();
+    time = {
+        start: 0,
+        elapsed: 0,
+        level: 0,
+    };
+}
+
+function play() {
+    addEventListener();
+    resetGame();
+
+    if (requestId) {
+        cancelAnimationFrame(requestId);
+    }
+    animate();
+}
