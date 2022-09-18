@@ -99,6 +99,17 @@ class Board {
                 }
             });
         });
+
+        this.clearLines();
+    }
+
+    clearLines() {
+        this.grid.forEach((row, y) => {
+            if (row.every((value) => value > 0)) {
+                this.grid.splice(y, 1);
+                this.grid.unshift(Array(COLS).fill(0));
+            }
+        });
     }
 
     rotate(piece) {
